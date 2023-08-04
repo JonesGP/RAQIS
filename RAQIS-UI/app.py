@@ -2,23 +2,32 @@
 import kivy
 import sys
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.boxlayout import BoxLayout 
 from kivy.lang import Builder
 from kivy.core.window import Window
 from pathlib import Path
 Builder.load_file('ui.kv')
-Window.size = (1280, 720)
-Window.minimum_width = 1280
-Window.minimum_height = 720
+Window.size = (1000, 720)
+Window.minimum_width = 1200
+Window.minimum_height = 640
+                
 #base rgb para colocar no paletton 201010
 #base rgb para colocar no paletton 6B2F2F claras
-folder = 'a'
+# C:\Users\Jon3s\Desktop\Novos Projetos\Nova pasta    pasta para testa todos os arquivos
 class layoutprincipal(BoxLayout):
     pass
 
 class Meu_app(App): # O App é uma classe do Kivy, nessa linha estamos criando uma classe que herda da classe App do kivy
-    def def_variable(self):
-        pass
+    def __init__(self, **kwargs):
+        super(Meu_app, self).__init__(**kwargs)
+        self.textdir = ''
+        
+    def verificar_options(self, optio):
+        if optio.isnumeric():
+            print(f"O valor digitado foi: {optio}")
+            pass
+        else:
+            print(f"O valor digitado foi: nada")
         
     def verificar_arq(self, text):
         ap = App.get_running_app()
@@ -32,24 +41,42 @@ class Meu_app(App): # O App é uma classe do Kivy, nessa linha estamos criando u
         ap.root.ids.conteudo_pasta.text = str(formated_tupla_arq)
     
     def tirar_first_char(self, char, dire):
+        textdir = self.root.ids.dir_input.text
         folder = Path(dire)
-        for arquivo in folder.iterdir():
-            novo_nome = arquivo.name[int(char):]
-            novo_caminho = arquivo.with_name(novo_nome)
-            arquivo.rename(novo_caminho)
-        pass
-    def remove_last_char(self, dire, char_end):
-        folder = Path(dire)
-        for arquivo in folder.iterdir():
-            old_name, extension = arquivo.stem, arquivo.suffix
-            novo_nome = old_name[:(len(old_name) - int(char_end))] + extension
-            novo_caminho = arquivo.with_name(novo_nome)
+        text = self.textdir
+        if char.isnumeric():
             try:
-                arquivo.rename(novo_caminho)
+                for arquivo in folder.iterdir():
+                    novo_nome = arquivo.name[int(char):]
+                    novo_caminho = arquivo.with_name(novo_nome)
+                    arquivo.rename(novo_caminho)
             except Exception as error:
-                print(f"Não foi possivel remover os caracteres de: {arquivo.name}")
-                print(f"Ocorreu um erro: {str(error)}")
+                self.verificar_options(char, error)
+        else:
+            print(f"O valor digitado não é um numero inteiro")
+        print(textdir)
+        self.verificar_arq(text = textdir)
+    
+    def remove_last_char(self, dire, char_end):
+        textdir = self.root.ids.dir_input.text
+        folder = Path(dire)
+        if char_end.isnumeric():
+            try:
+                for arquivo in folder.iterdir():
+                    old_name, extension = arquivo.stem, arquivo.suffix
+                    novo_nome = old_name[:(len(old_name) - int(char_end))] + extension
+                    novo_caminho = arquivo.with_name(novo_nome)
+                    try:
+                        arquivo.rename(novo_caminho)
+                    except Exception as error:
+                        print(f"Não foi possivel remover os caracteres de: {arquivo.name}")
+                        print(f"Ocorreu um erro: {str(error)}")
+            except Exception as error:
+                print("Ocorreu um erro: " + str(error))
+        self.verificar_arq(text = textdir)
+        
     def numerar_arquivos(self, dire):
+        textdir = self.root.ids.dir_input.text
         folder = Path(dire)
         num = 1
         for arquivo in folder.iterdir():
@@ -62,7 +89,7 @@ class Meu_app(App): # O App é uma classe do Kivy, nessa linha estamos criando u
                 print("Não foi possivel numerar o arquivo: " + arquivo.name) 
                 continue   
             num += 1
-        pass
+        self.verificar_arq(text = textdir)
     
     #função para fechar o aplicativo
     def exit_app(self):
