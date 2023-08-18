@@ -7,7 +7,7 @@ from kivy.lang import Builder
 from kivy.core.window import Window
 from pathlib import Path
 Builder.load_file('ui.kv')
-Window.size = (1000, 720)
+Window.size = (1200, 720)
 Window.minimum_width = 1200
 Window.minimum_height = 640
                 
