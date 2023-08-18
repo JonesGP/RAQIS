@@ -6,16 +6,142 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.core.window import Window
 from pathlib import Path
-Builder.load_file('ui.kv')
 Window.size = (1200, 720)
 Window.minimum_width = 1200
 Window.minimum_height = 640
-                
+
+kv_string = '''
+#:kivy 2.2.1
+BoxLayout:
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba: 0.17, 0.02, 0.02, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'horizontal'
+    size_hint: 1, 1
+    padding: 20
+    BoxLayout:
+        orientation: 'vertical'
+        id: 'menu1'
+        size_hint: 0.1, 1
+        spacing: 10
+        padding: 10
+        canvas.before:
+            Color: 
+                rgba: 0.25, 0.08, 0.08, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            id: 'titulo'
+            text: 'Menu'
+            font_size: 20
+            size_hint: 1, 0.05
+        BoxLayout:
+            id: submenu
+            orientation: 'vertical'
+            size_hint: 1, 0.75
+            BoxLayout:
+                id: idsubmenuone
+                orientation: 'vertical'
+                size_hint: 1, 0.8
+                spacing: 10
+                Label:
+                    text: 'Digite quantos caracteres deseja tirar ou clique em numerar arquivos para numerar os arquivos:'
+                    text_size: self.size
+                    size_hint: 1, 0.4
+                    halign: 'left'
+                TextInput:
+                    id: idquantidade
+                    size_hint: 1, 0.08
+                    hint_text: 'Quantidade...'
+                Button:
+                    id: idtir_first_car
+                    text: 'Tirar pri. carac.'
+                    size_hint: 1, 0.1
+                    background_color: 0.16, 0.52, 0.52, 1
+                    on_release: app.tirar_first_char(char = idquantidade.text, dire = dir_input.text)
+                Button:
+                    id: idtir_last_car
+                    text: 'Tirar ult. carac.'
+                    size_hint: 1, 0.1
+                    background_color: 0.16, 0.52, 0.52, 1
+                    opacity: 1
+                    on_release: app.remove_last_char(char_end = idquantidade.text, dire = dir_input.text)
+                Button:
+                    id: idnum_arq
+                    text: 'Num. arq.'
+                    size_hint: 1, 0.1
+                    background_color: 0.16, 0.52, 0.52, 1
+                    opacity: 1
+                    on_release: app.numerar_arquivos(dir_input.text)
+            Label:
+                id: 'vazio'
+                size_hint: 1, 0.4
+        Button:
+            id: testebtn
+            text: 'Sair'
+            size_hint: 1, 0.1
+            on_release: app.exit_app()
+            background_color: 0.16, 0.52, 0.52, 1
+            opacity: 1
+        Label:
+            id: idversion
+            text: 'V0.0.1 JonesGP'
+            font_size: 15
+            size_hint: 1, 0.02
+    BoxLayout:
+        orientation: 'vertical'
+        id: 'conteudo'
+        size_hint: 0.8, 1
+        padding: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.05
+            spacing: 10
+            #quero um input text
+            TextInput:
+                id: dir_input
+                #quero adicionar um placeholder
+                hint_text: 'Digite o diretório...'
+                size_hint: 0.9, 1
+                spacing: [0, 0, 10, 0]
+            Button:
+                text: 'Verificar'
+                size_hint: 0.1, 1
+                on_release: app.verificar_arq(dir_input.text)
+                background_color: 0.16, 0.52, 0.52, 1
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 0.05
+            Label:
+                id: pasta
+                size_hint: 1, 0.5
+                text: f'A pasta:'
+                pos: -500, 0
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.9
+            ScrollView:
+                Label:
+                    id: conteudo_pasta
+                    multi_line: True
+                    text: 'Arquivos'
+                    font_size: 20
+                    size_hint: None, None
+                    height: self.texture_size[1]
+                    width: self.texture_size[0]
+            Label:
+                id: 'vazio'
+                size_hint: 0.5, 1
+'''
+
 #base rgb para colocar no paletton 201010
 #base rgb para colocar no paletton 6B2F2F claras
 # C:\Users\Jon3s\Desktop\Novos Projetos\Nova pasta    pasta para testa todos os arquivos
-class layoutprincipal(BoxLayout):
-    pass
 
 class Meu_app(App): # O App é uma classe do Kivy, nessa linha estamos criando uma classe que herda da classe App do kivy
     def __init__(self, **kwargs):
@@ -98,7 +224,7 @@ class Meu_app(App): # O App é uma classe do Kivy, nessa linha estamos criando u
     def build(self):
         self.title = "RAQIS - Renomeador de Arquivos - Developer by JonesGP Studio"
 
-        return layoutprincipal() # Retornando a boxlayout
+        return Builder.load_string(kv_string) # Retornando a boxlayout
 if __name__ == '__main__': #__main__ é uma variavel especial que é definida como __main__ quando voce executa o arquivo diretamente
     Meu_app().run()
     
